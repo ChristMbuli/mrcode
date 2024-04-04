@@ -197,7 +197,7 @@
                   Message envoyé avec succès !
                 </div>
               </div>
-              <form id="contactForm">
+               <form id="contactForm">
                 <input type="text" id="lastName" placeholder="Nom" required />
                 <input
                   type="text"
@@ -207,7 +207,9 @@
                 />
                 <input type="email" id="email" placeholder="Email" required />
                 <textarea id="message" placeholder="Message"></textarea>
-                <button type="submit" class="site-btn">Envoyer</button>
+                <button type="button" onclick="sendEmail()" class="site-btn">
+                  Envoyer
+                </button>
               </form>
             </div>
           </div>
@@ -316,41 +318,38 @@
       </div>
     </footer>
     <!-- Footer Section End -->
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script>
-      document
-        .getElementById("contactForm")
-        .addEventListener("submit", async function (event) {
-          event.preventDefault();
+      (function () {
+        emailjs.init("M-Xrn_Iru_Do54Son"); // Remplacez YOUR_USER_ID par votre identifiant d'utilisateur EmailJS
+      })();
 
-          const firstName = document.getElementById("firstName").value;
-          const lastName = document.getElementById("lastName").value;
-          const email = document.getElementById("email").value;
-          const message = document.getElementById("message").value;
+      function sendEmail() {
+        var lastName = document.getElementById("lastName").value;
+        var firstName = document.getElementById("firstName").value;
+        var email = document.getElementById("email").value;
+        var message = document.getElementById("message").value;
 
-          try {
-            const response = await fetch(
-              "https://portfolio-backend-tfmf.onrender.com/send-email",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  firstName,
-                  lastName,
-                  email,
-                  message,
-                }),
-              }
-            );
+        var templateParams = {
+          lastName: lastName,
+          firstName: firstName,
+          email: email,
+          message: message,
+        };
 
-            if (response.status === 200) {
-              document.getElementById("successMessage").style.display = "block";
+        emailjs
+          .send("service_e1czsr8", "template_fm4n6y8", templateParams)
+          .then(
+            function (response) {
+              alert("Message envoyé avec succès!");
+              document.getElementById("contactForm").reset(); // Réinitialise le formulaire
+            },
+            function (error) {
+              console.error("Erreur lors de l'envoi de l'email:", error);
+              alert("Une erreur est survenue lors de l'envoi du message.");
             }
-          } catch (error) {
-            console.error("Erreur lors de l'envoi du formulaire :", error);
-          }
-        });
+          );
+      }
     </script>
 
     <!-- Js Plugins -->
